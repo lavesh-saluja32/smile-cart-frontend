@@ -16,10 +16,6 @@ const Carousel = ({ imageUrls, title }) => {
     );
   };
 
-  const handleIndex = key => {
-    setCurrentIndex(key);
-  };
-
   const resetTimer = () => {
     clearInterval(timerRef.current);
     timerRef.current = setInterval(handleNext, 3000);
@@ -49,18 +45,6 @@ const Carousel = ({ imageUrls, title }) => {
           className="max-w-56 h-56 max-h-56 w-56"
           src={imageUrls[currentIndex]}
         />
-        <div className="flex w-[100%] justify-center">
-          {imageUrls.map((_ele, index) => (
-            // eslint-disable-next-line react/jsx-key
-            <div
-              key={index}
-              className={`h-3 w-3 cursor-pointer rounded-full border-2 border-black ${
-                currentIndex === index ? "bg-black" : "bg-white"
-              }`}
-              onClick={() => handleIndex(index)}
-            />
-          ))}
-        </div>
       </div>
       <Button
         className="shrink-0 focus-within:ring-0 hover:bg-transparent"
