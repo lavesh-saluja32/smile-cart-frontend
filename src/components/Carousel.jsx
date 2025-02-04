@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import { Left, Right } from "neetoicons";
 import { Button } from "neetoui";
 
 const Carousel = ({ imageUrls, title }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const timerRef = useRef(null);
   const handleNext = () => {
     setCurrentIndex(prevIndex => (prevIndex + 1) % imageUrls.length);
   };
@@ -19,10 +20,15 @@ const Carousel = ({ imageUrls, title }) => {
     setCurrentIndex(key);
   };
 
-  useEffect(() => {
-    const timer = setInterval(handleNext, 3000);
+  const resetTimer = () => {
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(handleNext, 3000);
+  };
 
-    return () => clearInterval(timer);
+  useEffect(() => {
+    timerRef.current = setInterval(handleNext, 3000);
+
+    return () => clearInterval(timerRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -33,7 +39,10 @@ const Carousel = ({ imageUrls, title }) => {
         className="rink-0 focus-within:ring-0 hover:bg-transparent"
         icon={Left}
         style="text"
-        onClick={handlePrevious}
+        onClick={() => {
+          handlePrevious();
+          resetTimer();
+        }}
       />
       <div className="flex-col items-center justify-center">
         <img
@@ -57,7 +66,10 @@ const Carousel = ({ imageUrls, title }) => {
         className="shrink-0 focus-within:ring-0 hover:bg-transparent"
         icon={Right}
         style="text"
-        onClick={handleNext}
+        onClick={() => {
+          handleNext();
+          resetTimer();
+        }}
       />
     </div>
   );
