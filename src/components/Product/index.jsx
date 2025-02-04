@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react";
 
 import productsApi from "apis/products";
-import { Typography, Spinner } from "neetoui";
+import { Typography } from "neetoui";
 import { isNotNil } from "ramda";
+import { useParams } from "react-router-dom";
 
 import Carousel from "./Carousel";
+
+import { PageNotFound, Header, PageLoader } from "../commons";
 
 const Product = () => {
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-
+  const [isError, setIsError] = useState(false);
+  const { slug } = useParams();
   const fetchProduct = async () => {
     try {
-      const product = await productsApi.show();
-      console.log(product.image_urls);
+      const product = await productsApi.show(slug);
+      console.log(product);
       setProduct(product);
     } catch (e) {
       console.error(e);
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -24,32 +29,25 @@ const Product = () => {
 
   useEffect(() => {
     fetchProduct();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const { name, description, mrp, offerPrice, imageUrls, imageUrl } = product;
   const totalDiscounts = mrp - offerPrice;
   const discountPercentage = ((totalDiscounts / mrp) * 100).toFixed(1);
+  if (isError) return <PageNotFound />;
 
   if (isLoading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <Spinner />
-      </div>
-    );
+    return <PageLoader />;
   }
 
   return (
     <div className="px-6 pb-6">
-      <div>
-        <Typography className="py-2 text-4xl font-semibold" style="h1">
-          {name}
-        </Typography>
-        <hr className="border-2 border-black" />
-      </div>
+      <Header title={name} />
       <div className="mt-6 flex gap-4">
         <div className="w-2/5">
           {isNotNil(imageUrl) ? (
-            <Carousel imageUrls={[...imageUrls, imageUrl]} title={name} />
+            <Carousel imageUrls={[imageUrls ?? null, imageUrl]} title={name} />
           ) : (
             <img alt={name} className="w-48" src={imageUrl} />
           )}

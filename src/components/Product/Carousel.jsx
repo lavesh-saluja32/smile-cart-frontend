@@ -4,6 +4,8 @@ import { Left, Right } from "neetoicons";
 import { Button } from "neetoui";
 
 const Carousel = ({ imageUrls, title }) => {
+  console.log(imageUrls);
+  imageUrls = imageUrls.filter(ele => !!ele);
   const [currentIndex, setCurrentIndex] = useState(0);
   const timerRef = useRef(null);
   const handleNext = () => {
