@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Left, Right } from "neetoicons";
 import { Button } from "neetoui";
@@ -18,6 +18,13 @@ const Carousel = ({ imageUrls, title }) => {
   const handleIndex = key => {
     setCurrentIndex(key);
   };
+
+  useEffect(() => {
+    const timer = setInterval(handleNext, 3000);
+
+    return () => clearInterval(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex items-center">
