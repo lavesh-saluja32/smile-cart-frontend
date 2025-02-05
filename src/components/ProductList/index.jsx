@@ -37,6 +37,7 @@ const ProductList = () => {
   if (isLoading) {
     return <PageLoader />;
   }
+  console.log(products, "NEW");
 
   return (
     <div className="flex flex-col">

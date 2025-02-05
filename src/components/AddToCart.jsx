@@ -1,29 +1,24 @@
+import useSelectedQuantity from "hooks/useSelectedQuantity";
 import { Button } from "neetoui";
-import useCartItemsStore from "stores/useCartItemsStore";
-import { shallow } from "zustand/shallow";
+import { isNil } from "ramda";
 
-const AddToCart = ({ slug }) => {
-  const { isInCart, toggleIsInCart } = useCartItemsStore(
-    store => ({
-      isInCart: store.cartItems.includes(slug),
-      toggleIsInCart: store.toggleIsInCart,
-    }),
-    shallow
-  );
+import ProductQuantity from "./commons/ProductQuantity";
+
+const AddToCart = ({ slug, availableQuantity }) => {
+  const { selectedQuantity, setSelectedQuantity } = useSelectedQuantity(slug);
 
   const handleClick = e => {
+    console.log("lklllll");
+    console.log(setSelectedQuantity);
     e.stopPropagation();
     e.preventDefault();
-    toggleIsInCart(slug);
+    setSelectedQuantity(1);
   };
+  if (!isNil(selectedQuantity)) {
+    return <ProductQuantity {...{ slug, availableQuantity }} />;
+  }
 
-  return (
-    <Button
-      label={isInCart ? "Remove from cart" : "Add to cart"}
-      size="large"
-      onClick={handleClick}
-    />
-  );
+  return <Button label="Add to cart" size="large" onClick={handleClick} />;
 };
 
 export default AddToCart;

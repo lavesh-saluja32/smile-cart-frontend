@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import productsApi from "apis/products";
+import AddToCart from "components/AddToCart";
 import { Typography } from "neetoui";
 import { isNotNil } from "ramda";
 import { useParams } from "react-router-dom";
@@ -32,7 +33,15 @@ const Product = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { name, description, mrp, offerPrice, imageUrls, imageUrl } = product;
+  const {
+    name,
+    description,
+    mrp,
+    offerPrice,
+    imageUrls,
+    imageUrl,
+    availableQuantity,
+  } = product;
   const totalDiscounts = mrp - offerPrice;
   const discountPercentage = ((totalDiscounts / mrp) * 100).toFixed(1);
   if (isError) return <PageNotFound />;
@@ -61,6 +70,7 @@ const Product = () => {
           <Typography className="font-semibold text-green-600">
             {discountPercentage}% off
           </Typography>
+          <AddToCart {...{ availableQuantity, slug }} />
         </div>
       </div>
     </div>
