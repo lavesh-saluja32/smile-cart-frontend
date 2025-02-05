@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import productsApi from "apis/products";
 import Header from "components/commons/Header";
 import PageLoader from "components/commons/PageLoader";
+import useDebounce from "hooks/useDebounce";
 import { Search } from "neetoicons";
 import { Input, NoData } from "neetoui";
 import { isEmpty } from "ramda";
@@ -13,9 +14,12 @@ const Home = () => {
   const [searchKey, setSearchKey] = useState("");
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const debouncedSearchKey = useDebounce(searchKey);
   const fetchProducts = async () => {
     try {
-      const response = await productsApi.fetch({ searchTerm: searchKey });
+      const response = await productsApi.fetch({
+        searchTerm: debouncedSearchKey,
+      });
       console.log(response.products, "pp");
       setProducts(response.products);
     } catch (error) {
@@ -28,7 +32,7 @@ const Home = () => {
   useEffect(() => {
     fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchKey]);
+  }, [debouncedSearchKey]);
 
   if (isLoading) {
     return <PageLoader />;
