@@ -4,7 +4,7 @@ import { isNil } from "ramda";
 
 import ProductQuantity from "./commons/ProductQuantity";
 
-const AddToCart = ({ slug, availableQuantity }) => {
+const AddToCart = ({ slug }) => {
   const { selectedQuantity, setSelectedQuantity } = useSelectedQuantity(slug);
 
   const handleClick = e => {
@@ -15,7 +15,7 @@ const AddToCart = ({ slug, availableQuantity }) => {
     setSelectedQuantity(1);
   };
   if (!isNil(selectedQuantity)) {
-    return <ProductQuantity {...{ slug, availableQuantity }} />;
+    return <ProductQuantity {...{ slug }} />;
   }
 
   return <Button label="Add to cart" size="large" onClick={handleClick} />;

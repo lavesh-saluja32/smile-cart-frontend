@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
-
-import productsApi from "apis/products";
 import AddToCart from "components/AddToCart";
+import { useShowProducts } from "hooks/reactQuery/useProductsApi";
 import useSelectedQuantity from "hooks/useSelectedQuantity";
 import { Typography, Button } from "neetoui";
 import { isNotNil } from "ramda";
@@ -13,37 +11,17 @@ import Carousel from "./Carousel";
 import { PageNotFound, Header, PageLoader } from "../commons";
 
 const Product = () => {
-  const [product, setProduct] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
   const { slug } = useParams();
   const { selectedQuantity, setSelectedQuantity } = useSelectedQuantity(slug);
-
-  const fetchProduct = async () => {
-    try {
-      const product = await productsApi.show(slug);
-      console.log(product);
-      setProduct(product);
-    } catch (e) {
-      console.error(e);
-      setIsError(true);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProduct();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { data: product = {}, isLoading, isError } = useShowProducts(slug);
 
   const {
     name,
     description,
     mrp,
     offerPrice,
-    imageUrls,
     imageUrl,
+    imageUrls,
     availableQuantity,
   } = product;
   const totalDiscounts = mrp - offerPrice;
@@ -59,8 +37,8 @@ const Product = () => {
       <Header title={name} />
       <div className="mt-6 flex gap-4">
         <div className="w-2/5">
-          {isNotNil(imageUrl) ? (
-            <Carousel imageUrls={[imageUrls ?? null, imageUrl]} title={name} />
+          {isNotNil(imageUrls) ? (
+            <Carousel />
           ) : (
             <img alt={name} className="w-48" src={imageUrl} />
           )}
