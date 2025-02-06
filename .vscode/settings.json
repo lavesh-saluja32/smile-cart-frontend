@@ -2,5 +2,5 @@
   "files.trimTrailingWhitespace": true,
   "files.trimFinalNewlines": true,
   "editor.formatOnSave": true,
-  "cSpell.words": ["neetoicons", "neetoui", "Toastr"]
+  "cSpell.words": ["bigbinary", "neeto", "neetoicons", "neetoui", "Toastr"]
 }
