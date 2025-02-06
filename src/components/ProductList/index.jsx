@@ -3,24 +3,54 @@ import { useState } from "react";
 import Header from "components/commons/Header";
 import PageLoader from "components/commons/PageLoader";
 import { useFetchProducts } from "hooks/reactQuery/useProductsApi";
-import useDebounce from "hooks/useDebounce";
+import useFuncDebounce from "hooks/useFuncDebounce";
+//import useDebounce from "hooks/useDebounce";
+import useQueryParams from "hooks/useQueryParams";
+import { filterNonNull } from "neetocist";
 import { Search } from "neetoicons";
 import { Input, NoData, Pagination } from "neetoui";
 import { isEmpty } from "ramda";
+import { useHistory } from "react-router-dom";
+import routes from "routes";
+import { buildUrl } from "utils/url";
 
 import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_INDEX } from "./constants";
 import ProductListItem from "./ProductListItem";
 
 const ProductList = () => {
   const [searchKey, setSearchKey] = useState("");
-  const debouncedSearchKey = useDebounce(searchKey);
-  const [currentPage, setCurrentPage] = useState(DEFAULT_PAGE_INDEX);
+  //const debouncedSearchKey = useDebounce(searchKey);
+  const queryParams = useQueryParams();
+  const { page, pageSize, searchTerm = "" } = queryParams;
+  const productsParams = {
+    searchTerm,
+    page: Number(page) || DEFAULT_PAGE_INDEX,
+    pageSize: Number(pageSize) || DEFAULT_PAGE_SIZE,
+  };
+
   const { data: { products = [], totalProductsCount } = {}, isLoading } =
-    useFetchProducts({
-      searchTerm: debouncedSearchKey,
-      page: currentPage,
+    useFetchProducts(productsParams);
+  const history = useHistory();
+
+  const handlePageNavigation = page =>
+    history.replace(
+      buildUrl(routes.products.index, {
+        page,
+        pageSize: DEFAULT_PAGE_SIZE,
+        searchTerm,
+      })
+    );
+
+  const updateQueryParams = useFuncDebounce(value => {
+    const params = {
+      page: DEFAULT_PAGE_INDEX,
       pageSize: DEFAULT_PAGE_SIZE,
-    });
+      searchTerm: value || null,
+    };
+    setSearchKey(value);
+
+    history.replace(buildUrl(routes.products.index, filterNonNull(params)));
+  });
 
   if (isLoading) {
     return <PageLoader />;
@@ -40,7 +70,7 @@ const ProductList = () => {
             value={searchKey}
             onChange={event => {
               setSearchKey(event.target.value);
-              setCurrentPage(DEFAULT_PAGE_INDEX);
+              updateQueryParams(event.target.value);
             }}
           />
         }
@@ -57,9 +87,11 @@ const ProductList = () => {
       <div className="mb-5 self-end">
         <Pagination
           count={totalProductsCount}
-          navigate={page => setCurrentPage(page)}
-          pageNo={currentPage || DEFAULT_PAGE_INDEX}
-          pageSize={DEFAULT_PAGE_SIZE}
+          pageNo={Number(page) || DEFAULT_PAGE_INDEX}
+          pageSize={Number(pageSize) || DEFAULT_PAGE_SIZE}
+          navigate={page => {
+            handlePageNavigation(page);
+          }}
         />
       </div>
     </div>
