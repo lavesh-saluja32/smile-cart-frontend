@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
-
-import productsApi from "apis/products";
 import { PageLoader } from "components/commons";
 import { MRP, OFFER_PRICE } from "components/commons/constants";
 import Header from "components/commons/Header";
+import { useFetchCartProducts } from "hooks/reactQuery/useProductsApi";
 import i18n from "i18next";
-import { NoData, Toastr } from "neetoui";
+import { NoData } from "neetoui";
 import { keys, isEmpty } from "ramda";
 import useCartItemsStore from "stores/useCartItemsStore";
 import { cartTotalOf } from "utils/cartTotalOf";
@@ -15,43 +13,11 @@ import PriceCard from "./PriceCard";
 import ProductCard from "./ProductCard";
 
 const Cart = () => {
-  const { cartItems, setSelectedQuantity } = useCartItemsStore.pick();
+  const cartItems = useCartItemsStore.pickFrom();
   const slugs = keys(cartItems);
-  const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: products = [], isLoading } = useFetchCartProducts(slugs);
   const totalMrp = cartTotalOf(products, MRP);
   const totalOfferPrice = cartTotalOf(products, OFFER_PRICE);
-
-  const fetchCartProducts = async () => {
-    try {
-      const responses = await Promise.all(
-        slugs.map(slug => productsApi.show(slug))
-      );
-      setProducts(responses);
-      responses.forEach(({ availableQuantity, name, slug }) => {
-        if (availableQuantity >= cartItems[slug]) return;
-
-        setSelectedQuantity(slug, availableQuantity);
-        if (availableQuantity === 0) {
-          Toastr.error(
-            `${name} is no longer available and has been removed from cart`,
-            {
-              autoClose: 2000,
-            }
-          );
-        }
-      });
-    } catch (error) {
-      console.log("An error occurred:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCartProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cartItems]);
 
   if (isLoading) return <PageLoader />;
 

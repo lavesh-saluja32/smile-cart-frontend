@@ -9,5 +9,8 @@
   "pageTitle": "{{title}} | Smile Cart",
   "cart": {
     "title": "My cart"
+  },
+  "product": {
+    "page": "Product"
   }
 }

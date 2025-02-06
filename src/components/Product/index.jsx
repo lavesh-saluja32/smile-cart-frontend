@@ -5,6 +5,8 @@ import { Typography, Button } from "neetoui";
 import { isNotNil } from "ramda";
 import { useParams } from "react-router-dom";
 import routes from "routes";
+import i18n from "src/common/i18n";
+import withTitle from "utils/withTitles";
 
 import Carousel from "./Carousel";
 
@@ -67,5 +69,4 @@ const Product = () => {
     </div>
   );
 };
-
-export default Product;
+export default withTitle(Product, i18n.t("product.page"));
