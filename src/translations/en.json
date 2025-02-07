@@ -44,5 +44,17 @@
     "stateRequired": "State is required",
     "zipCodeRequired": "Zip code is required",
     "emailInvalid": "Email address is invalid"
-  }
+  },
+  "confirmOrder": "Confirm order",
+  "error": {
+    "noInternetConnection": "No Internet Connection",
+    "networkError": "Network Error"
+  },
+  "order": {
+    "successfullyPlaced": "Order has been successfully placed"
+  },
+  "subtotal": "Subtotal <span>${{totalPrice}}</span>",
+  "totalPayablePrice": "Total Payable <span>${{totalPrice}}</span>",
+  "deliveryCharges": "Delivery charges <span>FREE</span>",
+  "saveInformationForNextTime": "Save this information for next time"
 }
