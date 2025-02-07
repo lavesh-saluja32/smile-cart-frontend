@@ -8,7 +8,10 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import withTitle from "utils/withTitles";
 
-import { CHECKOUT_FORM_INITIAL_VALUES } from "./constants";
+import {
+  CHECKOUT_FORM_INITIAL_VALUES,
+  CHECKOUT_FORM_VALIDATION_SCHEMA,
+} from "./constants";
 import Form from "./Form";
 
 const Checkout = () => {
@@ -26,6 +29,7 @@ const Checkout = () => {
       formProps={{ noValidate: true }}
       formikProps={{
         initialValues: CHECKOUT_FORM_INITIAL_VALUES,
+        validationSchema: CHECKOUT_FORM_VALIDATION_SCHEMA,
       }}
     >
       <div className="flex space-x-4">
@@ -56,5 +60,5 @@ const Checkout = () => {
     </NeetoUIForm>
   );
 };
-
-export default withTitle(Checkout, i18n.t("checkout"));
+export default withTitle(Checkout, i18n.t("checkout")); // gives Warning: Using UNSAFE_componentWillMount in strict mode is not recommended and may indicate bugs in your code
+// export default Checkout; // no error
