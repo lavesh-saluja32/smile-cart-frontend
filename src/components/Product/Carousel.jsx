@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, memo } from "react";
 
 import { useShowProducts } from "hooks/reactQuery/useProductsApi";
 import { Left, Right } from "neetoicons";
@@ -66,4 +66,4 @@ const Carousel = () => {
   );
 };
 
-export default Carousel;
+export default memo(Carousel);
